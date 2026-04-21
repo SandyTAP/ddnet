@@ -1440,7 +1440,8 @@ void CMenus::RenderSettings(CUIRect MainView)
 		Localize("Graphics"),
 		Localize("Sound"),
 		Localize("DDNet"),
-		Localize("Assets")};
+		Localize("Assets"),
+        Localize("My Client")};
 	static CButtonContainer s_aTabButtons[SETTINGS_LENGTH];
 
 	for(int i = 0; i < SETTINGS_LENGTH; i++)
@@ -1504,6 +1505,11 @@ void CMenus::RenderSettings(CUIRect MainView)
 		GameClient()->m_MenuBackground.ChangePosition(CMenuBackground::POS_SETTINGS_ASSETS);
 		RenderSettingsCustom(MainView);
 	}
+    else if(g_Config.m_UiSettingsPage == SETTINGS_MYCLIENT)
+    {
+        GameClient()->m_MenuBackground.ChangePosition(CMenuBackground::POS_SETTINGS_ASSETS);
+        RenderSettingsMyClient(MainView);
+    }
 	else
 	{
 		dbg_assert_failed("ui_settings_page invalid");
@@ -3067,6 +3073,22 @@ void CMenus::CPopupMapPickerContext::MapListPopulate()
 	m_pMenus->Storage()->ListDirectoryInfo(IStorage::TYPE_ALL, aTemp, MapListFetchCallback, this);
 	std::stable_sort(m_vMaps.begin(), m_vMaps.end(), CompareFilenameAscending);
 	m_Selection = -1;
+}
+
+void CMenus::RenderSettingsMyClient(CUIRect MainView)
+{
+    CUIRect Button;
+
+    MainView.HSplitTop(30.0f, &Button, &MainView);
+    Ui()->DoLabel(&Button, "My client", 20.0f, TEXTALIGN_ML);
+
+    static int Test = 0;
+
+    MainView.HSplitTop(20.0f, &Button, &MainView);
+    if(DoButton_CheckBox(&Test, "test", Test, &Button))
+    {
+        Test ^= 1;
+    }
 }
 
 int CMenus::CPopupMapPickerContext::MapListFetchCallback(const CFsFileInfo *pInfo, int IsDir, int StorageType, void *pUser)
