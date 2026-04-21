@@ -10,4 +10,7 @@ public:
 
 private:
     int FindClosestTarget(vec2 From, float Fov);
+
+   
+    bool CanSee(vec2 From, vec2 To);
 };

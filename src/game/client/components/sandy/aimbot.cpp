@@ -4,7 +4,13 @@
 #include <game/client/gameclient.h>
 #include <game/client/prediction/entities/character.h>
 
-// поиск ближайшей цели
+bool CAimbot::CanSee(vec2 From, vec2 To)
+{
+    vec2 Col, NewPos;
+    return !GameClient()->Collision()->IntersectLine(From, To, &Col, &NewPos);
+}
+
+
 int CAimbot::FindClosestTarget(vec2 From, float MaxDist)
 {
     int BestId = -1;
@@ -19,6 +25,10 @@ int CAimbot::FindClosestTarget(vec2 From, float MaxDist)
             continue;
 
         vec2 Pos = GameClient()->m_aClients[i].m_Predicted.m_Pos;
+
+        if(!CanSee(From, Pos))
+            continue;
+
         float Dist = distance(From, Pos);
 
         if(Dist < BestDist)
@@ -46,7 +56,6 @@ void CAimbot::OnUpdate()
 
     vec2 LocalPos = pLocal->GetPos();
 
-    // FOV (дистанция)
     float Fov = g_Config.m_SandyAimFov > 0 ? g_Config.m_SandyAimFov : 400.0f;
 
     int TargetId = FindClosestTarget(LocalPos, Fov);
@@ -55,18 +64,14 @@ void CAimbot::OnUpdate()
 
     vec2 TargetPos = GameClient()->m_aClients[TargetId].m_Predicted.m_Pos;
 
-    // направление
     vec2 Aim = TargetPos - LocalPos;
 
-    // текущий прицел (ВАЖНО — берём vec2, а не собираем его)
     int Dummy = g_Config.m_ClDummy;
     vec2 Current = GameClient()->m_Controls.m_aMousePos[Dummy];
 
-    // плавность
     float Smooth = 0.2f;
 
     vec2 NewAim = Current + (Aim - Current) * Smooth;
 
-    // записываем обратно vec2
     GameClient()->m_Controls.m_aMousePos[Dummy] = NewAim;
 }
