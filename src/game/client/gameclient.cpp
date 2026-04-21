@@ -161,6 +161,7 @@ void CGameClient::OnConsoleInit()
 					      &m_Scoreboard,
 					      &m_Statboard,
 					      &m_Motd,
+						  &m_SandyAimbot, // mod
 					      &m_Menus,
 					      &m_Tooltips,
 					      &m_KeyBinder,

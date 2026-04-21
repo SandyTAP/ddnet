@@ -2413,6 +2413,10 @@ if(CLIENT)
     animstate.h
     component.cpp
     component.h
+
+    components/sandy/aimbot.cpp
+    components/sandy/aimbot.h
+
     components/background.cpp
     components/background.h
     components/binds.cpp

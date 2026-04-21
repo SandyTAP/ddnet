@@ -26,6 +26,10 @@
 #include <game/mapbugs.h>
 #include <game/teamscore.h>
 
+// mod
+#include "components/sandy/aimbot.h"
+
+
 // components
 #include "components/background.h"
 #include "components/binds.h"
@@ -170,6 +174,9 @@ public:
 	CTouchControls m_TouchControls;
 	CVoting m_Voting;
 	CSpectator m_Spectator;
+
+	// mod
+	CAimbot m_SandyAimbot;
 
 	CPlayers m_Players;
 	CNamePlates m_NamePlates;

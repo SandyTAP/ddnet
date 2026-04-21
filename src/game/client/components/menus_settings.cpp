@@ -1441,7 +1441,7 @@ void CMenus::RenderSettings(CUIRect MainView)
 		Localize("Sound"),
 		Localize("DDNet"),
 		Localize("Assets"),
-        Localize("My Client")};
+        Localize("SandyTap Client")};
 	static CButtonContainer s_aTabButtons[SETTINGS_LENGTH];
 
 	for(int i = 0; i < SETTINGS_LENGTH; i++)
@@ -3077,17 +3077,133 @@ void CMenus::CPopupMapPickerContext::MapListPopulate()
 
 void CMenus::RenderSettingsMyClient(CUIRect MainView)
 {
-    CUIRect Button;
-
-    MainView.HSplitTop(30.0f, &Button, &MainView);
-    Ui()->DoLabel(&Button, "My client", 20.0f, TEXTALIGN_ML);
-
-    static int Test = 0;
-
-    MainView.HSplitTop(20.0f, &Button, &MainView);
-    if(DoButton_CheckBox(&Test, "test", Test, &Button))
+    enum
     {
-        Test ^= 1;
+        MY_TAB_AIMBOT = 0,
+        MY_TAB_VISUALS,
+        MY_TAB_MISC,
+        MY_TAB_LENGTH
+    };
+
+    static int s_MyTab = 0;
+
+    CUIRect Header, TabBar, Content;
+
+    // ===== Заголовок =====
+    MainView.HSplitTop(30.0f, &Header, &MainView);
+    Ui()->DoLabel(&Header, "Sandy Client", 20.0f, TEXTALIGN_MC);
+
+    MainView.HSplitTop(5.0f, 0x0, &MainView);
+
+    // ===== Tabs =====
+    MainView.HSplitTop(25.0f, &TabBar, &MainView);
+
+    const char *apTabs[MY_TAB_LENGTH] = {
+        "Aimbot",
+        "Visuals",
+        "Misc"
+    };
+
+    float TabWidth = TabBar.w / (float)MY_TAB_LENGTH;
+    static CButtonContainer s_aTabs[MY_TAB_LENGTH];
+
+    for(int i = 0; i < MY_TAB_LENGTH; i++)
+    {
+        CUIRect Button;
+        TabBar.VSplitLeft(TabWidth, &Button, &TabBar);
+
+        int Corners = i == 0 ? IGraphics::CORNER_L :
+                      (i == MY_TAB_LENGTH - 1 ? IGraphics::CORNER_R : IGraphics::CORNER_NONE);
+
+        if(DoButton_MenuTab(&s_aTabs[i], apTabs[i], s_MyTab == i, &Button, Corners))
+            s_MyTab = i;
+    }
+
+    MainView.HSplitTop(10.0f, 0x0, &MainView);
+    Content = MainView;
+
+    // =========================
+    // ===== AIMBOT ============
+    // =========================
+    if(s_MyTab == MY_TAB_AIMBOT)
+    {
+        CUIRect Left, Right, Row;
+
+        Content.VSplitMid(&Left, &Right, 20.0f);
+
+
+        Left.HSplitTop(20, &Row, &Left);
+        Ui()->DoLabel(&Row, "Aimbot", 16.0f, TEXTALIGN_ML);
+
+        Left.HSplitTop(5, 0x0, &Left);
+
+        Left.HSplitTop(20, &Row, &Left);
+        if(DoButton_CheckBox(&g_Config.m_SandyAim, "Enable", g_Config.m_SandyAim, &Row))
+            g_Config.m_SandyAim ^= 1;
+
+       
+        if(g_Config.m_SandyAim)
+        {
+            Left.HSplitTop(5, 0x0, &Left);
+
+            Left.HSplitTop(20, &Row, &Left);
+            Ui()->DoScrollbarOption(&g_Config.m_SandyAimFov,
+                &g_Config.m_SandyAimFov, &Row, "FOV", 0, 360);
+        }
+
+        
+        Right.HSplitTop(20, &Row, &Right);
+        Ui()->DoLabel(&Row, "Extra", 16.0f, TEXTALIGN_ML);
+
+        Right.HSplitTop(5, 0x0, &Right);
+
+        Right.HSplitTop(20, &Row, &Right);
+        Ui()->DoLabel(&Row, "More settings soon...", 12.0f, TEXTALIGN_ML);
+    }
+
+    // =========================
+    // ===== VISUALS ===========
+    // =========================
+    else if(s_MyTab == MY_TAB_VISUALS)
+    {
+        CUIRect Left, Right, Row;
+
+        Content.VSplitMid(&Left, &Right, 20.0f);
+
+        Left.HSplitTop(20, &Row, &Left);
+        Ui()->DoLabel(&Row, "ESP", 16.0f, TEXTALIGN_ML);
+
+        Left.HSplitTop(5, 0x0, &Left);
+
+        Left.HSplitTop(20, &Row, &Left);
+        if(DoButton_CheckBox(&g_Config.m_SandyEsp, "Enable ESP", g_Config.m_SandyEsp, &Row))
+            g_Config.m_SandyEsp ^= 1;
+    }
+
+    // =========================
+    // ===== MISC ==============
+    // =========================
+    else if(s_MyTab == MY_TAB_MISC)
+    {
+        CUIRect Row;
+
+        
+        Content.HSplitTop(20, &Row, &Content);
+        Ui()->DoLabel(&Row, "Misc settings here", 14.0f, TEXTALIGN_ML);
+
+        
+        Content.HSplitTop(10, 0x0, &Content);
+
+        
+        Content.HSplitTop(20, &Row, &Content);
+
+        static CButtonContainer s_TestBtn;
+        if(DoButton_Menu(&s_TestBtn, "Open config", 0, &Row))
+        {
+            char aBuf[IO_MAX_PATH_LENGTH];
+            Storage()->GetCompletePath(IStorage::TYPE_SAVE, "settings_ddnet.cfg", aBuf, sizeof(aBuf));
+            Client()->ViewFile(aBuf);
+        }
     }
 }
 

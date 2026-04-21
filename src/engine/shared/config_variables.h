@@ -786,6 +786,14 @@ MACRO_CONFIG_INT(GfxDriverIsBlocked, gfx_driver_is_blocked, 0, 0, 1, CFGFLAG_SAV
 
 MACRO_CONFIG_INT(ClVideoRecorderFPS, cl_video_recorder_fps, 60, 1, 1000, CFGFLAG_SAVE | CFGFLAG_CLIENT, "At which FPS the videorecorder should record demos.")
 
+//mod
+
+MACRO_CONFIG_INT(SandyAim, sandy_aim, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Aimbot")
+MACRO_CONFIG_INT(SandyAimFov, sandy_aim_fov, 90, 0, 360, CFGFLAG_CLIENT | CFGFLAG_SAVE, "Aimbot FOV")
+MACRO_CONFIG_INT(SandyEsp, sandy_esp, 0, 0, 1, CFGFLAG_CLIENT | CFGFLAG_SAVE, "ESP")
+
+
+//mod
 /*
  * Add config variables for mods below this comment to avoid merge conflicts.
  */
